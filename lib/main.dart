@@ -8,154 +8,126 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Calculadora',
-      home: Calculator(),
+      title: 'Menú',
+      theme: ThemeData(
+        primaryColor: Colors.cyan, // Color celeste para la barra de menú
+        scaffoldBackgroundColor: Colors.grey[50], // Fondo gris claro
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      home: MenuScreen(),
     );
   }
 }
 
-class Calculator extends StatefulWidget {
-  @override
-  _CalculatorState createState() => _CalculatorState();
+class MenuItem {
+  final String title;
+  final String price;
+  final String imageUrl;
+
+  MenuItem({required this.title, required this.price, required this.imageUrl});
 }
 
-class _CalculatorState extends State<Calculator> {
-  String output = '0';
+List<MenuItem> menuList = [
+  MenuItem(
+    title: 'Ceviche',
+    price: 'S/ 25.00',
+    imageUrl: 'https://imgmedia.larepublica.pe/640x371/larepublica/migration/images/BYR7OLNP6REB7GJDLMWTF2WAC4.webp',
+  ),
+  MenuItem(
+    title: 'Lomo Saltado',
+    price: 'S/ 15.00',
+    imageUrl: 'https://trome.com/resizer/_hcB5Bvb3SQWXAQpXGzI-d8K59o=/1200x675/smart/filters:format(jpeg):quality(75)/cloudfront-us-east-1.images.arcpublishing.com/elcomercio/X4RTLRSFS5GX5CE26F4D25KUIU.jpg',
+  ),
+  MenuItem(
+    title: 'Ají de Gallina',
+    price: 'S/ 16.00',
+    imageUrl: 'https://cclconectados.com/wp-content/uploads/2023/09/ajidegallina.jpg',
+  ),
+  MenuItem(
+    title: '1/4 Pollo a la Brasa',
+    price: 'S/ 20.00',
+    imageUrl: 'https://buenazo.cronosmedia.glr.pe/original/2021/05/24/60ac32a1b8ecfe147c041613.jpg',
+  ),
+  MenuItem(
+    title: 'Rocoto Relleno',
+    price: 'S/ 12.00',
+    imageUrl: 'https://mojo.generalmills.com/api/public/content/O-OFmxjsVUynqsFBv2xWWQ_gmi_hi_res_jpeg.jpeg?v=48a505e6&t=16e3ce250f244648bef28c5949fb99ff',
+  ),
+];
 
-  void buttonPressed(String buttonText) {
-    setState(() {
-      if (output == '0') {
-        output = buttonText;
-      } else {
-        output += buttonText;
-      }
-    });
-  }
-
-  void clear() {
-    setState(() {
-      output = '0';
-    });
-  }
-
-  void calculate() {
-    setState(() {
-      output = '0'; 
-    });
-  }
-
+class MenuScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Calculadora'),
+        title: Text('Menú', style: TextStyle(fontSize: 24, color: Colors.white)),
+        centerTitle: true,
+        backgroundColor: Colors.blue, 
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: <Widget>[
-          Container(
-            padding: EdgeInsets.all(24.0),
-            alignment: Alignment.centerRight,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.vertical(bottom: Radius.circular(16)),
-            ),
-            child: Text(
-              output,
-              style: TextStyle(fontSize: 48.0, fontWeight: FontWeight.bold),
-            ),
-          ),
-          Expanded(
-            flex: 3,
-            child: Column(
-              children: [
-                Row(
-                  children: <Widget>[
-                    buildButton('7'),
-                    buildButton('8'),
-                    buildButton('9'),
-                    buildButton('/', isOperator: true),
-                  ],
-                ),
-                Row(
-                  children: <Widget>[
-                    buildButton('4'),
-                    buildButton('5'),
-                    buildButton('6'),
-                    buildButton('*', isOperator: true),
-                  ],
-                ),
-                Row(
-                  children: <Widget>[
-                    buildButton('1'),
-                    buildButton('2'),
-                    buildButton('3'),
-                    buildButton('-', isOperator: true),
-                  ],
-                ),
-                Row(
-                  children: <Widget>[
-                    buildButton('C', isClear: true, isOperator: true),
-                    buildButton('0'),
-                    buildButton('=', isCalculate: true, isSmall: true),
-                    buildButton('+', isOperator: true),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
+      body: ListView.builder(
+        itemCount: menuList.length,
+        itemBuilder: (context, index) {
+          return MenuItemWidget(menuItem: menuList[index]);
+        },
       ),
     );
   }
+}
 
-  Widget buildButton(String buttonText, {bool isClear = false, bool isCalculate = false, bool isOperator = false, bool isSmall = false}) {
-    return Expanded(
-      child: Padding(
-        padding: EdgeInsets.all(8.0),
-        child: AspectRatio(
-          aspectRatio: isSmall ? 0.75 : 1,
-          child: isCalculate
-              ? ElevatedButton(
-                  onPressed: () {
-                    calculate();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    shape: CircleBorder(),
-                    backgroundColor: Colors.blue,
-                    elevation: 5,
-                    padding: EdgeInsets.all(20.0),
-                  ),
-                  child: Text(
-                    buttonText,
+class MenuItemWidget extends StatelessWidget {
+  final MenuItem menuItem;
+
+  MenuItemWidget({required this.menuItem});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(12),
+              bottomLeft: Radius.circular(12),
+            ),
+            child: Image.network(
+              menuItem.imageUrl,
+              width: 120,
+              height: 120,
+              fit: BoxFit.cover,
+            ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    menuItem.title,
                     style: TextStyle(
-                      fontSize: 24.0,
-                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
                     ),
                   ),
-                )
-              : TextButton(
-                  onPressed: () {
-                    if (isClear) {
-                      clear();
-                    } else {
-                      buttonPressed(buttonText);
-                    }
-                  },
-                  style: TextButton.styleFrom(
-                    foregroundColor: isOperator ? Colors.blue : Colors.black,
-                    elevation: 3,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: Text(
-                    buttonText,
+                  SizedBox(height: 4),
+                  Text(
+                    menuItem.price,
                     style: TextStyle(
-                      fontSize: 24.0,
+                      fontSize: 18,
+                      color: Colors.grey[700],
                     ),
                   ),
-                ),
-        ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
