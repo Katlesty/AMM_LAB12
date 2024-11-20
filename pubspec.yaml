@@ -15,6 +15,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   google_fonts: ^5.0.0
+  universal_platform: ^1.1.0
 
 dev_dependencies:
   flutter_test:
@@ -29,5 +30,4 @@ flutter:
   generate: true
 
   assets:
-    # Add assets from the images directory to the application.
     - assets/images/
